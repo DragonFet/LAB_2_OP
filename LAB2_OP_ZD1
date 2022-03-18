@@ -1,0 +1,375 @@
+#include <iostream>
+#include <ctime>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <set>
+#include <map>
+#include <fstream>
+#include <sstream>
+using namespace std;
+string path = "data.txt";
+int N = 0;
+int count_line = 0;
+class Student
+{
+public:
+	string faculti;
+	int group = 0;;
+	static int count;
+	string get_Name()
+	{
+		cout << "Please input name student" << endl;
+		string name_tmp;
+		cin >> name_tmp;
+		name = name_tmp;
+		++count;
+		return name;
+	}
+	string get_Surename()
+	{
+		cout << "Please input surename  student" << endl;
+		string surename_tmp;
+		cin >> surename_tmp;
+		surename = surename_tmp;
+		return surename;
+	}
+	string get_faculti()
+	{
+		cout << "Please input faculti" << endl;
+		cin >> faculti;
+		return faculti;
+	}
+	string set_Name()
+	{
+		return name;
+	}
+	string set_Surename()
+	{
+		return surename;
+	}
+	int set_group()
+	{
+		return group;
+	}
+	string set_faculti()
+	{
+		return faculti;
+	}
+	int get_group()
+	{
+		cout << "Please input group" << endl;
+		cin >> group;
+		return group;
+
+	}
+	void Print_all()
+	{
+		cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
+		cout << "Name student is:" << " " << name << endl;
+		cout << "Surename student is:" << " " << surename << endl;
+		cout << "Faculti student is:" << " " << faculti << endl;
+		cout<<	"Group student is:"<<" "<<group << endl;
+		cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
+		cout << endl;
+	}
+	int ReturnCount()
+	{
+		return count;
+	}
+	string InputName(string &name_in_file)
+	{
+		name= name_in_file ;
+		return name;
+	}
+	string InputSurename(string &surename_in_file)
+	{
+		 surename=surename_in_file ;
+		return surename;
+	}
+	string InputFaculti(string &faculti_in_file)
+	{
+		faculti=faculti_in_file;
+		return faculti;
+	}
+	int InputNumber(int& number_in_file)
+	{
+		group = number_in_file;
+		return group;
+	}
+private:
+	string name;
+	string surename;
+
+	void Print_inforamtion(const string& name, const string& surename, const int group, const string faculti)
+	{
+		cout << "IFORMATION ABOUT STUDENT:" << endl;
+		cout << "Name :" << " " << name << endl;
+		cout << "Surename :" << " " << surename << endl;
+		cout << "Faculti :" << " " << faculti << endl;
+		cout << "Number Group:" << " " << group << endl;
+	}
+
+};
+
+int Student::count;
+
+void Menu()
+{
+	cout << "Main menu" << '\t' << endl;
+	cout << endl;
+	cout << "1- Add new student in database " << endl;
+	cout << "2- Filter student with number group " << endl;
+	cout << "3- Sort with Alhabet student " << endl;
+	cout << "4- Find student for surename " << endl;
+	cout << "5- Output all student " << endl;
+	cout << "6- Exit programe" << endl;
+	cout << endl;
+	cout << "Please input your solution :" << '\t' << endl;
+}
+
+void add(Student*& database, int& N)
+{
+
+	database[N].get_Name();
+
+	database[N].get_Surename();
+
+	database[N].get_faculti();
+
+	database[N].get_group();
+	++N;
+}
+
+void Filter_with_number(Student*& database, const int& N,int value)
+{
+	for (int i = 0; i < N; i++)
+	{
+		if (database[i].group ==value)
+		{
+			database[i].Print_all();
+		}
+	}
+
+}
+
+void Sort_Alphabet(Student*& database, const int& N)
+{
+	set<string>names;
+	for (int  i = 0; i < N; i++)
+	{
+		string name_ = database[i].set_Name();
+		names.insert(name_);
+	}
+	for (string i:names)
+	{
+		if (i=="")
+		{
+			continue;
+		}
+		for (int j = 0; j < N; j++)
+		{
+			string name_;
+			name_ = database[j].set_Name();
+			if (i==name_)
+			{
+				database[j].Print_all();
+				break;
+			}
+		}
+	}
+}
+
+void Find_with_surename(Student*& database, const int& N, string& surnames)
+{
+	int a = 0;
+	for (int i = 0; i < N; i++)
+	{
+		string surenames = database[i].set_Surename();
+		if (surnames==surenames)
+		{
+			database[i].Print_all();
+			++a;
+			break;
+		}
+	}
+	if (a==0)
+	{
+		cout << "That student not find" << endl;
+	}
+}
+
+void Print_ALL(Student*& database, const int& N)
+{
+	for (int  i = 0; i < N; i++)
+	{
+		database[i].Print_all();
+	}
+}
+
+void save(Student*& database, const int& N)
+{
+	fstream datainput;
+	datainput.open(path, ios::out);
+	for (int i = 0; i < N; i++)
+	{
+		string name, surename,faculti;
+		int number;
+		name = database[i].set_Name();
+		surename = database[i].set_Surename();
+		faculti = database[i].set_faculti();
+		number = database[i].set_group();
+		datainput << name << endl << surename << endl << faculti << endl << number << endl;
+		cout << endl;
+	}
+	datainput.close();
+}
+
+void Value_N(int& N) {
+	fstream read;
+	read.open(path, ios::in);
+	int count = 1;
+	string per;
+	while (read.peek() != EOF) {
+		getline(read, per);
+		++count;
+		if (count % 4 == 0)
+		{
+			++N;
+		}
+	}
+	count_line = count;
+}
+int string_to_int(string str)
+{
+	int result;
+	istringstream iss(str, istringstream::in);
+	iss >> result;
+	return result;
+}
+void load_from_file(Student*& database)
+{
+	int index = 0;
+	fstream datainput;
+	datainput.open(path, ios::in);
+	for (int j = 0; j < count_line - 1;)
+	{
+		j = j + 4;
+		for (int i = 0; i < 4; i++)
+		{
+			switch (i)
+			{
+			case 0:
+			{
+				string line;
+				getline(datainput, line);
+				database[index].InputName(line);
+				break;
+			}
+			case 1:
+			{
+				string line;
+				getline(datainput, line);
+				database[index].InputSurename(line);
+				break;
+			}
+			case 2:
+			{
+				string line;
+				getline(datainput, line);
+				database[index].InputFaculti(line);
+				break;
+			}
+			case 3:
+			{
+				string line;
+				getline(datainput, line);
+				int b = string_to_int(line);
+				database[index].InputNumber(b);
+				break;
+			}
+			
+			}
+		}
+		index++;
+	}
+	datainput.close();
+}
+
+
+
+int main()
+{
+	Student* database = new Student[1000000];
+	Value_N(N);
+	load_from_file(database);
+	int solution = 0;
+	while (solution != 6)
+	{
+		Menu();
+		cin >> solution;
+		switch (solution)
+		{
+			case 1:
+			{
+				add(database, N);
+				cout << "Complete Succsefull" << endl;
+				system("pause");
+				system("cls");
+				break;
+			}
+			case 2:
+			{
+				int value;
+				cout << "Please input number " << '\t';
+				cin >> value;
+				Filter_with_number(database,N,value);
+				system("pause");
+				system("cls");
+				break;
+				
+			}
+			case 3:
+			{
+				cout << "Sorti student " << endl;
+				Sort_Alphabet(database, N);
+				system("pause");
+				system("cls");
+				break;
+			}
+			case 4:
+			{
+				cout << "Please input surname student" << endl;
+				string surnames;
+				cin >> surnames;
+				Find_with_surename(database, N, surnames);
+				system("pause");
+				system("cls");
+				break;
+			}
+			case 5:
+			{
+				system("cls");
+				cout << "That all student" << endl;
+				cout << endl;
+				Print_ALL(database, N);
+				system("pause");
+				system("cls");
+				break;
+
+			}
+			case 6:
+			{
+				save(database, N);
+				cout << "Exit" << endl;
+				return 0;
+			}
+		}
+
+
+	}
+
+
+
+	return 0;
+}
